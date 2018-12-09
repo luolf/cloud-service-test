@@ -11,6 +11,8 @@
     <modules>
         <module>provider</module>
         <module>consumer</module>
+        <module>datamodule</module>
+        <module>myutils</module>
     </modules>
 
 
