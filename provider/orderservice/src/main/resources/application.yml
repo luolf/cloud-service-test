@@ -7,6 +7,8 @@ server:
 spring:
   application:
     name: orderservice
+  zipkin:
+    base-url: http://localhost:8888
 feign:
   hystrix:
     enabled: true

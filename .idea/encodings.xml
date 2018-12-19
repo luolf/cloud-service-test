@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/consumer/randomservice" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/eureka" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/my-zuul" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/provider/orderservice" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/server-zipkin" charset="UTF-8" />
   </component>
 </project>

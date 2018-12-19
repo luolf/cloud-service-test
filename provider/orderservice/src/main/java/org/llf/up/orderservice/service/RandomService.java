@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(value = "randomservice",fallback = RandomServiceImpl.class)
 public interface RandomService {
-    @RequestMapping(value = "/num/longObject",method = RequestMethod.GET)
+    @RequestMapping(value = "/get",method = RequestMethod.GET)
     Long getRandomLong();
 }

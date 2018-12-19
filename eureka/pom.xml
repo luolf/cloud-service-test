@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.llf</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>my-eureka</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>myeureka</name>
+	<name>my-eureka</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>

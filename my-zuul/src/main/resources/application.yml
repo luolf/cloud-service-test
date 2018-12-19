@@ -7,3 +7,13 @@ server:
 spring:
   application:
     name: myzuul
+  zipkin:
+    base-url: http://localhost:8888
+zuul:
+  routes:
+    orderService:
+      path: /api-a/**
+      serviceId: orderservice
+    randomservice2:
+      path: /api-b/**
+      serviceId: randomservice

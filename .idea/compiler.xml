@@ -10,10 +10,12 @@
         <module name="datamodule" />
         <module name="demo" />
         <module name="eureka" />
+        <module name="my-zuul" />
         <module name="myutils" />
         <module name="orderservice" />
         <module name="provider" />
         <module name="randomservice" />
+        <module name="server-zipkin" />
       </profile>
     </annotationProcessing>
   </component>
