@@ -13,6 +13,8 @@
         <module>consumer</module>
         <module>datamodule</module>
         <module>myutils</module>
+        <module>test-util</module>
+        <module>jetcd-examples</module>
     </modules>
 
 

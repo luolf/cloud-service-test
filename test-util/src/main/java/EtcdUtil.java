@@ -1,8 +1,10 @@
 
 import com.coreos.jetcd.Client;
+import com.coreos.jetcd.KV;
 import com.coreos.jetcd.Watch;
 import com.coreos.jetcd.data.ByteSequence;
 import com.coreos.jetcd.data.KeyValue;
+import com.coreos.jetcd.kv.GetResponse;
 import com.coreos.jetcd.kv.PutResponse;
 import com.coreos.jetcd.lease.LeaseGrantResponse;
 import com.coreos.jetcd.options.DeleteOption;
@@ -49,7 +51,21 @@ public class EtcdUtil {
     public static KeyValue getEtcdKey(String key) {
         KeyValue keyValue = null;
         try {
-            keyValue = client.getKVClient().get(ByteSequence.fromString(key)).get().getKvs().get(0);
+            KV kv =EtcdUtil.getEtclClient().getKVClient();
+            ByteSequence bs=ByteSequence.fromString(key);
+            CompletableFuture<GetResponse> tt=kv.get(bs);
+            GetResponse response =tt.get();
+            response =tt.get();
+            response =tt.get();
+
+
+            if (response.getKvs().isEmpty()) {
+                // key does not exist
+                return null;
+            }
+            keyValue = response.getKvs().get(0);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +82,7 @@ public class EtcdUtil {
         List<KeyValue> keyValues = new ArrayList<>();
         GetOption getOption = GetOption.newBuilder().withPrefix(ByteSequence.fromString(prefix)).build();
         try {
-            keyValues = client.getKVClient().get(ByteSequence.fromString(prefix), getOption).get().getKvs();
+            keyValues = EtcdUtil.getEtclClient().getKVClient().get(ByteSequence.fromString(prefix), getOption).get().getKvs();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,7 +96,7 @@ public class EtcdUtil {
      * @param value etcdKey's value
      */
     public static void putEtcdKey(String key, String value) {
-        client.getKVClient().put(ByteSequence.fromString(key), ByteSequence.fromString(value));
+        EtcdUtil.getEtclClient().getKVClient().put(ByteSequence.fromString(key), ByteSequence.fromString(value));
     }
 
     /**
@@ -138,7 +154,7 @@ public class EtcdUtil {
      * @param key etcdKey
      */
     public static void deleteEtcdKey(String key) {
-        client.getKVClient().delete(ByteSequence.fromString(key));
+        EtcdUtil.getEtclClient().getKVClient().delete(ByteSequence.fromString(key));
     }
 
     /**
@@ -148,7 +164,7 @@ public class EtcdUtil {
      */
     public static void deleteEtcdKeyWithPrefix(String prefix) {
         DeleteOption deleteOption = DeleteOption.newBuilder().withPrefix(ByteSequence.fromString(prefix)).build();
-        client.getKVClient().delete(ByteSequence.fromString(prefix), deleteOption);
+        EtcdUtil.getEtclClient().getKVClient().delete(ByteSequence.fromString(prefix), deleteOption);
     }
 
     /**
