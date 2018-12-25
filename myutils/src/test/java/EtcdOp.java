@@ -1,5 +1,7 @@
 import com.alibaba.fastjson.JSON;
+import com.coreos.jetcd.api.AuthenticateRequest;
 import com.coreos.jetcd.data.ByteSequence;
+import com.coreos.jetcd.lock.LockResponse;
 import gateway.backend.vo.*;
 import gateway.frontend.vo.Frontend;
 import gateway.frontend.vo.Route;
@@ -10,6 +12,7 @@ import org.testng.log4testng.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Test
@@ -18,12 +21,12 @@ public class EtcdOp {
     private static Logger log=Logger.getLogger(EtcdOp.class);
 
 
-    public void printJsomLog(Object obj){
+    public static void printJsomLog(Object obj){
 //        log.info(toJsonString(obj));
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSSS").format(new Date())+":"+ toJsonString(obj));
     }
 
-    public String toJsonString(Object obj){
+    public static String toJsonString(Object obj){
         return JSON.toJSONString(obj);
     }
 
@@ -197,7 +200,7 @@ public class EtcdOp {
     public void  putProvider() throws Exception {
         Provider provider=createProvider();
         String prefix="/traefik";
-
+        AuthenticateRequest s;
         EtcdUtil.deleteEtcdKeyWithPrefix(prefix);
         PathNode node= createProviderNode(provider,prefix);
         HashMap<String,String> kvMap;
@@ -239,5 +242,59 @@ public class EtcdOp {
         Provider provider= JSON.parseObject(provideJson,Provider.class);
         printJsomLog(provider);
         return  provider;
+    }
+    public static void main(String[] args){
+        String key="/myname";
+        Long leaseId= null;
+        try {
+            leaseId = EtcdUtil.getEtclClient().getLeaseClient().grant(5000L).get().getTTL();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        printJsomLog("租约"+leaseId);
+        for(int i=0;i<10;i++) {
+            final int sn=i;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Thread.currentThread().setName("慢兔兔"+sn);
+                    try {
+                        putKey(key, 1L);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+        }
+
+    public static void putKey(String key,long time) throws ExecutionException, InterruptedException {
+
+        CompletableFuture<LockResponse> future=EtcdUtil.getEtclClient().getLockClient().lock(ByteSequence.fromString(key), 0L);
+
+        try {
+        printJsomLog(Thread.currentThread().getName()+future.get().getKey().toStringUtf8());
+            printJsomLog(Thread.currentThread().getName()+":加锁"+key);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    }
+        printJsomLog(Thread.currentThread().getName()+":get1="+EtcdUtil.get(key));
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        EtcdUtil.putEtcdKey(key,Thread.currentThread().getName());
+
+        printJsomLog(Thread.currentThread().getName()+":get2="+EtcdUtil.get(key));
+
+        EtcdUtil.getEtclClient().getLockClient().unlock(ByteSequence.fromString(future.get().getKey().toStringUtf8())).get();
+        printJsomLog(Thread.currentThread().getName()+":释放锁"+key);
     }
 }
