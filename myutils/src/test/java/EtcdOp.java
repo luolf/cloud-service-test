@@ -222,11 +222,11 @@ public class EtcdOp {
             return ;
         }
         newKey=newKey+node.getName();
-       if ( node.getValue()!=null) {
-           kv.put(newKey,node.getValue());
+        if ( node.getValue()!=null) {
+            kv.put(newKey,node.getValue());
         }
         if(newKey.split("/").length>50) {
-             throw  new Exception("健值深度过大！");
+            throw  new Exception("健值深度过大！");
 
         }
         for(PathNode subNode:node.getSubNodes()){
@@ -270,20 +270,22 @@ public class EtcdOp {
                 }
             }).start();
         }
-        }
+    }
 
+    //ETCD分布式锁
     public static void putKey(String key,long time) throws ExecutionException, InterruptedException {
 
+        //加锁
         CompletableFuture<LockResponse> future=EtcdUtil.getEtclClient().getLockClient().lock(ByteSequence.fromString(key), 0L);
 
         try {
-        printJsomLog(Thread.currentThread().getName()+future.get().getKey().toStringUtf8());
+            printJsomLog(Thread.currentThread().getName()+future.get().getKey().toStringUtf8());
             printJsomLog(Thread.currentThread().getName()+":加锁"+key);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    } catch (ExecutionException e) {
-        e.printStackTrace();
-    }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         printJsomLog(Thread.currentThread().getName()+":get1="+EtcdUtil.get(key));
         try {
             Thread.sleep(time);
@@ -293,8 +295,10 @@ public class EtcdOp {
         EtcdUtil.putEtcdKey(key,Thread.currentThread().getName());
 
         printJsomLog(Thread.currentThread().getName()+":get2="+EtcdUtil.get(key));
-
+        //解锁
         EtcdUtil.getEtclClient().getLockClient().unlock(ByteSequence.fromString(future.get().getKey().toStringUtf8())).get();
+        //错误用法，不可预期后果
+//        EtcdUtil.getEtclClient().getLockClient().unlock(ByteSequence.fromString(key)).get();
         printJsomLog(Thread.currentThread().getName()+":释放锁"+key);
     }
 }
