@@ -243,48 +243,51 @@ public class EtcdOp {
         printJsomLog(provider);
         return  provider;
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         String key="/myname";
-        Long leaseId= null;
-        try {
-            leaseId = EtcdUtil.getEtclClient().getLeaseClient().grant(5000L).get().getTTL();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        printJsomLog("租约"+leaseId);
-        for(int i=0;i<10;i++) {
+
+        for(int i=0;i<3;i++) {
             final int sn=i;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Thread.currentThread().setName("慢兔兔"+sn);
+                     Long leaseId;
                     try {
-                        putKey(key, 1L);
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
+                        //租约不可共用
+                        leaseId = EtcdUtil.getEtclClient().getLeaseClient().grant(5000L).get().getID();
+                        printJsomLog("租约"+leaseId);
+                        putKey(key, 5000L,leaseId);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
+
                 }
             }).start();
         }
     }
 
     //ETCD分布式锁
-    public static void putKey(String key,long time) throws ExecutionException, InterruptedException {
+    public static void putKey(String key,long time,long leaseId) throws Exception {
 
         //加锁
-        CompletableFuture<LockResponse> future=EtcdUtil.getEtclClient().getLockClient().lock(ByteSequence.fromString(key), 0L);
+        CompletableFuture<LockResponse> future=EtcdUtil.getEtclClient().getLockClient().lock(ByteSequence.fromString(key), leaseId);
 
         try {
-            printJsomLog(Thread.currentThread().getName()+future.get().getKey().toStringUtf8());
+             future.get().getKey().toStringUtf8();
             printJsomLog(Thread.currentThread().getName()+":加锁"+key);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }
+        if("慢兔兔10".equals(Thread.currentThread().getName())){
+            throw new Exception("test");
         }
         printJsomLog(Thread.currentThread().getName()+":get1="+EtcdUtil.get(key));
         try {
