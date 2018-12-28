@@ -1,7 +1,7 @@
 package gateway.vo;
 
-import com.newland.paas.paasservice.frwmgr.gateway.backend.vo.Backend;
-import com.newland.paas.paasservice.frwmgr.gateway.frontend.vo.Frontend;
+import gateway.backend.vo.Backend;
+import gateway.frontend.vo.Frontend;
 
 import java.util.Map;
 
