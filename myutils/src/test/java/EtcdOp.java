@@ -246,7 +246,7 @@ public class EtcdOp {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         String key="/myname";
 
-        for(int i=0;i<3;i++) {
+        for(int i=0;i<2;i++) {
             final int sn=i;
             new Thread(new Runnable() {
                 @Override
@@ -255,7 +255,7 @@ public class EtcdOp {
                      Long leaseId;
                     try {
                         //租约不可共用
-                        leaseId = EtcdUtil.getEtclClient().getLeaseClient().grant(5000L).get().getID();
+                        leaseId = EtcdUtil.getEtclClient().getLeaseClient().grant(5L).get().getID();
                         printJsomLog("租约"+leaseId);
                         putKey(key, 5000L,leaseId);
                     } catch (InterruptedException e) {
@@ -269,6 +269,8 @@ public class EtcdOp {
 
                 }
             }).start();
+
+            Thread.sleep(100);
         }
     }
 
@@ -291,6 +293,9 @@ public class EtcdOp {
         }
         printJsomLog(Thread.currentThread().getName()+":get1="+EtcdUtil.get(key));
         try {
+            if(Thread.currentThread().getName().equals("慢兔兔0")){
+                time=time*10;
+            }
             Thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -303,5 +308,19 @@ public class EtcdOp {
         //错误用法，不可预期后果
 //        EtcdUtil.getEtclClient().getLockClient().unlock(ByteSequence.fromString(key)).get();
         printJsomLog(Thread.currentThread().getName()+":释放锁"+key);
+
+    }
+    @Test
+    public void threadLocal(){
+        final ThreadLocal<String> threadLocal = new
+                ThreadLocal<>();
+        threadLocal.set("测试2");
+        new Thread(() -> {
+            threadLocal.set("测试");
+            String result = threadLocal.get();
+            System.out.println("结果:"+result);
+        }).start();
+        String result = threadLocal.get();
+        System.out.println("结果2:"+result);
     }
 }

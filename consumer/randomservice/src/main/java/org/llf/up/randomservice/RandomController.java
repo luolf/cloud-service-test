@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tools.JSONChange;
+//import tools.JSONChange;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +22,11 @@ public class RandomController {
     String serviceName;
     @RequestMapping(value="/get", method = RequestMethod.GET)
     public Long getRandomNum(HttpServletRequest request){
-        try {
-            System.out.println("my name:"+serviceName+":"+"request:"+JSONChange.obj2Json(request.getContextPath()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println("my name:"+serviceName+":"+"request:"+JSONChange.obj2Json(request.getContextPath()));
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
 
         return new Random().nextLong();
     }

@@ -4,6 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Frontend {
+    public Frontend(String name) {
+        this.name = name;
+    }
+    public Frontend() {
+
+    }
     private String name;
     /**
      * 访问端点

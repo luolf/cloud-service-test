@@ -11,10 +11,14 @@ import com.coreos.jetcd.options.DeleteOption;
 import com.coreos.jetcd.options.GetOption;
 import com.coreos.jetcd.options.PutOption;
 import com.coreos.jetcd.options.WatchOption;
+import io.netty.handler.ssl.SslContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 public class EtcdUtil {
@@ -26,6 +30,7 @@ public class EtcdUtil {
      * @return EtcdClient instance
      */
     public static Client getEtclClient() {
+        ClientInit();
         return client;
     }
 
@@ -38,7 +43,16 @@ public class EtcdUtil {
             //String machineIp = getMachineIp();
             //create client;
             //client = Client.builder().endpoints("http://" + machineIp + port).build();
-            client = Client.builder().endpoints("http://" + "192.168.56.20:2379").build();
+            try {
+                client = Client.builder().endpoints("http://" + "192.168.56.20:2379").build();
+
+//                System.out.println( client.getClusterClient().);
+//                Client.builder().lazyInitialization(true)
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -67,11 +81,23 @@ public class EtcdUtil {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println("连接ETCD失败"+e.getMessage());
         }
         return keyValue;
     }
-
+   public static String get(String key){
+       KeyValue kv=getEtcdKey(key);
+       return kv==null?null:kv.getValue().toStringUtf8();
+   }
+    public static Map<String ,String > getWithPrefix(String key){
+        List<KeyValue> keyValues=getEtcdKeyWithPrefix(key);
+        HashMap hashMap = new HashMap();
+        for (KeyValue kv:keyValues){
+            hashMap.put(kv.getKey().toStringUtf8(),kv.getValue().toStringUtf8());
+        }
+        return hashMap;
+    }
     /**
      * get all etcdKey with this prefix 从Etcd获取满足前缀的所有key
      *
@@ -95,8 +121,14 @@ public class EtcdUtil {
      * @param key   single etcdKey
      * @param value etcdKey's value
      */
-    public static void putEtcdKey(String key, String value) {
-        EtcdUtil.getEtclClient().getKVClient().put(ByteSequence.fromString(key), ByteSequence.fromString(value));
+    public static void putEtcdKey(String key, String value)   {
+        try {
+            EtcdUtil.getEtclClient().getKVClient().put(ByteSequence.fromString(key), ByteSequence.fromString(value)).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -153,8 +185,8 @@ public class EtcdUtil {
      *
      * @param key etcdKey
      */
-    public static void deleteEtcdKey(String key) {
-        EtcdUtil.getEtclClient().getKVClient().delete(ByteSequence.fromString(key));
+    public static void deleteEtcdKey(String key) throws ExecutionException, InterruptedException {
+        EtcdUtil.getEtclClient().getKVClient().delete(ByteSequence.fromString(key)).get();
     }
 
     /**
@@ -162,9 +194,9 @@ public class EtcdUtil {
      *
      * @param prefix etcdKey's prefix
      */
-    public static void deleteEtcdKeyWithPrefix(String prefix) {
+    public static void deleteEtcdKeyWithPrefix(String prefix) throws ExecutionException, InterruptedException {
         DeleteOption deleteOption = DeleteOption.newBuilder().withPrefix(ByteSequence.fromString(prefix)).build();
-        EtcdUtil.getEtclClient().getKVClient().delete(ByteSequence.fromString(prefix), deleteOption);
+        EtcdUtil.getEtclClient().getKVClient().delete(ByteSequence.fromString(prefix), deleteOption).get();
     }
 
     /**

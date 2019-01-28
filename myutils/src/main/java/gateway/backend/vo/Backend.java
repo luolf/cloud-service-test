@@ -16,9 +16,18 @@ public class Backend {
      * 服务器列表
      */
     private Map<String, Server> servers;
+
+    public Backend(String name) {
+        this.name = name;
+    }
+    public Backend() {
+
+    }
+
     /**
      * 负载均衡器
      */
+
     private LoadBalancer loadBalancer;
 
     public String getName() {

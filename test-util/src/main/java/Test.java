@@ -28,7 +28,7 @@ public class Test {
 //
 //// get the value from CompletableFuture
 //        GetResponse response = getFuture.get();
-
+//
 // delete the key
 //        kvClient.delete(key).get();
 
