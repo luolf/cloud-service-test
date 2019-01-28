@@ -37,7 +37,7 @@ public class EtcdOp {
     }
 
 
-    public void putEtcdKeyTest(){
+    public void putEtcdKeyTest() throws ExecutionException, InterruptedException {
         String key="/traefik/backends/backend1/circuitbreaker/expression";
         String value="NetworkErrorRatio() > 0.5";
         log.info("begin  putEtcdKey(key,value)");
@@ -278,7 +278,7 @@ public class EtcdOp {
     public static void putKey(String key,long time,long leaseId) throws Exception {
 
         //加锁
-        CompletableFuture<LockResponse> future=EtcdUtil.getEtclClient().getLockClient().lock(ByteSequence.fromString(key), leaseId);
+           CompletableFuture<LockResponse> future=EtcdUtil.getEtclClient().getLockClient().lock(ByteSequence.fromString(key), leaseId);
 
         try {
              future.get().getKey().toStringUtf8();
