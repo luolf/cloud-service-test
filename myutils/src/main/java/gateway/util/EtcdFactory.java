@@ -16,7 +16,7 @@ public class EtcdFactory {
         String eps=stringAnalyze(endpoints);
         synchronized (connectionPools) {
             if (null == connectionPools.get(eps)) {
-                connectionPools.put(eps, new EtcdConImpl(eps));
+//                connectionPools.put(eps, new EtcdConImpl(eps));
             }
         }
         return connectionPools.get(eps);
@@ -25,7 +25,7 @@ public class EtcdFactory {
         String eps=stringAnalyze(endpoints);
         synchronized (connectionPools) {
             if (null == connectionPools.get(eps)) {
-                connectionPools.put(eps, new EtcdConImpl(eps, privateKey, keyCertChain));
+//                connectionPools.put(eps, new EtcdConImpl(eps, privateKey, keyCertChain));
             }
         }
         return connectionPools.get(eps);
