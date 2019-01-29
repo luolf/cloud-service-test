@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Random;
 
 @RestController
@@ -33,7 +34,8 @@ public class RandomController {
 
     @RequestMapping(value="/hit", method = RequestMethod.GET)
     public String Hi(@RequestParam String name){
-        return "HI "+name+",I\'M "+serviceName+":"+port;
+        Map<String, String> map = System.getenv();
+        return "HI "+name+",I\'M "+map.get("COMPUTERNAME")+serviceName+":"+port;
     }
 
 }
