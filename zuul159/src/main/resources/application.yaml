@@ -1,0 +1,21 @@
+eureka:
+  client:
+    serviceUrl:
+#      defaultZone: http://35.220.223.122:8761//eureka/
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 9995
+
+spring:
+  application:
+    name: zuul159
+  zipkin:
+    base-url: http://localhost:8888
+zuul:
+  routes:
+    orderService:
+      path: /api-order/**
+      serviceId: orderservice
+    randomservice2:
+      path: /api-random/**
+      serviceId: randomservice
