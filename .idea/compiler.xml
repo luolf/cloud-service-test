@@ -16,11 +16,14 @@
         <module name="provider" />
         <module name="randomservice" />
         <module name="server-zipkin" />
+        <module name="test-util" />
         <module name="testutil" />
+        <module name="zuul159" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="jetcd-ctl" target="1.5" />
+      <module name="jetcd-examples" target="1.5" />
       <module name="jetcd-watch" target="1.5" />
       <module name="jetcdexamples" target="1.5" />
     </bytecodeTargetLevel>

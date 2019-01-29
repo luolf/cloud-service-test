@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/consumer/randomservice/pom.xml" />
         <option value="$PROJECT_DIR$/my-zuul/pom.xml" />
         <option value="$PROJECT_DIR$/server-zipkin/pom.xml" />
+        <option value="$PROJECT_DIR$/zuul159/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

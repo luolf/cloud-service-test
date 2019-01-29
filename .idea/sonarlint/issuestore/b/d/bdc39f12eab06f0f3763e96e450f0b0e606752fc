@@ -1,7 +1,7 @@
 
-ksquid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿…ïø8Õ÷ÕÖù,
-Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Õ÷ÕÖù,
-isquid:S4488"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ŠúÎüÿÿÿÿ8Õ÷ÕÖù,
-dsquid:S4488"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ìêœÂ8Õ÷ÕÖù,
-T
-squid:S106"9Replace this use of System.out or System.err by a logger.(ãÎñí8Õ÷ÕÖù,
+fsquid:S4488"HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ìêœÂ8şìú­ü,
+ksquid:S4488""HReplace "@RequestMapping(method = RequestMethod.GET)" with "@GetMapping"(ŠúÎüÿÿÿÿ8şìú­ü,
+V
+squid:S106"9Replace this use of System.out or System.err by a logger.(ãÎñí8şìú­ü,
+msquid:S00100#"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¿…ïø8şìú­ü,
+Fsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8şìú­ü,
